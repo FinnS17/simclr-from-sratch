@@ -1,3 +1,5 @@
+"""Plotting utilities for SSL and linear probe logs."""
+
 import os
 import torch
 import matplotlib.pyplot as plt

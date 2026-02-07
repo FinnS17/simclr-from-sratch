@@ -1,3 +1,5 @@
+"""Train SimCLR-style SSL on CIFAR-10 and save checkpoints/logs."""
+
 from torchvision.datasets import CIFAR10
 from helpers import get_transform, SSLAugmentation, get_device
 import torch

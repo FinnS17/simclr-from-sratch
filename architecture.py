@@ -1,3 +1,5 @@
+"""Model components: CIFAR-friendly ResNet18 encoder and SimCLR projection head."""
+
 from torchvision import models
 import torch.nn as nn
 

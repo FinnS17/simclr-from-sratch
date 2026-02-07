@@ -1,3 +1,5 @@
+"""Linear probe evaluation for SimCLR features and a random baseline."""
+
 import os
 import torch
 import torch.nn.functional as F
