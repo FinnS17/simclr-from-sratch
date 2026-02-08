@@ -1,11 +1,11 @@
 # simclr-from-scratch
-From-scratch SimCLR-style contrastive learning on CIFAR-10 in PyTorch, focused on the core math, training loop, and linear-probe evaluation that demonstrate representation quality.
+From-scratch implementation of SimCLR in PyTorch, with a clean contrastive training pipeline and linear-probe evaluation to demonstrate how self-supervised learning produces linearly separable visual representations.
 
 ## Key concepts
-- SimCLR: learn representations by contrasting two augmented views of the same image (positive pair) against all other images in the batch (negatives).
-- Augmentations define invariances: the model is trained to treat heavy crops, color jitter, blur, and flips as the same semantic content.
-- Temperature scaling: `logits / temp` sharpens or smooths the softmax, controlling how strongly positives must stand out.
-- Hard negatives: visually similar images are harder to separate; large batches increase the chance of such negatives, improving robustness.
+- **SimCLR:** learns visual representations by training a CNN to pull together two augmented views of the same image (positive pair) while pushing them away from all other images in the batch (negatives). Although the objective is local, it implicitly encourages the network to learn reusable filters that capture stable, high-level structure, leading to globally organized representations.
+- **Augmentations define semantics:** strong augmentations (crop, color jitter, blur, flip) specify which variations should be ignored. Only features that remain stable across these transformations can satisfy the contrastive objective, which naturally aligns learned features with semantic properties shared across images.
+- **Temperature scaling:** controls how probability mass is distributed in the softmax over similarities and therefore how gradient contributions are weighted. Lower temperatures concentrate gradients on a few high-probability pairs, while higher temperatures distribute learning more evenly across the batch.
+- **Hard negatives:** are negative examples that receive a large share of the softmax probability mass and thus contribute strongly to the gradient. Lower temperatures amplify their influence, forcing the model to explicitly separate them from the positive pair.
 
 ## Implementation details
 - Encoder: `ResNet18` from torchvision, modified for CIFAR-10 (3x3 conv1, stride 1, no maxpool, fc -> `Identity`).
@@ -124,15 +124,11 @@ python visualizations.py
 
 ## Limitations and future work
 - Sweep temperature and batch size for stability and performance.
-- Add stronger evaluation (k-NN, few-shot, or linear probe on more datasets).
 - Try larger datasets (STL-10, ImageNet) and longer training schedules.
-- Use distributed batch norm, larger batches, or LARS for scaling.
-- Add multi-GPU support and reproducibility utilities (seeds, config files).
 
 ## What I learned / What this demonstrates
-- Implemented the full SimCLR objective from scratch, including masking and positive-pair indexing.
-- Built a clean SSL training loop and logging of representation-quality metrics, including a contrastive retrieval metric.
-- Designed a fair linear-probe evaluation with a random-encoder baseline to validate representation quality.
-- Debugged augmentation pipelines and device selection (MPS vs CPU).
-- Produced clear visualizations and checkpoints to support experimental iteration and reproducibility.
-- Demonstrated engineering rigor (data pipeline, training, logging) and experimental thinking (baseline, evaluation protocol).
+- Implemented the core SimCLR objective from scratch, including positive-pair indexing and masking, to understand the contrastive loss formulation.
+- Built a clean self-supervised training pipeline with explicit logging of representation-quality metrics beyond the loss.
+- Designed and ran a fair linear-probe evaluation with a random-encoder baseline to isolate and validate the quality of learned representations.
+- Created clear visualizations and checkpoints to support debugging, analysis, and reproducible experiments.
+- Demonstrated solid engineering practice (data pipeline, training loop, logging) together with experimental thinking (baselines, evaluation protocol).
